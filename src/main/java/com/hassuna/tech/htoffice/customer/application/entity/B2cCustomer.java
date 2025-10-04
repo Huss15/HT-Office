@@ -13,10 +13,10 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "customer_b2c")
 public class B2cCustomer extends Customer {
 
-    private String firstname;
-    private String lastname;
+  private String firstname;
+  private String lastname;
 
-    public B2cCustomer() {
-        super();
-    }
+  public B2cCustomer() {
+    super();
+  }
 }

@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class HtOfficeApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(HtOfficeApplication.class, args);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.run(HtOfficeApplication.class, args);
+  }
 }

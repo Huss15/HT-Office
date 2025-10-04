@@ -10,71 +10,72 @@ import jakarta.persistence.Table;
 @Table(name = "TAG")
 public class Tag {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long id;
-    public int tagIdentifier;
-    public String tagType;
-    public String severity;
-    public String displayString;
-    public String iconName;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  public long id;
 
-    public Tag() {
-    }
+  public int tagIdentifier;
+  public String tagType;
+  public String severity;
+  public String displayString;
+  public String iconName;
 
-    public Tag(int tagIdentifier, String tagType, String severity, String displayString, String iconName) {
-        this.tagIdentifier = tagIdentifier;
-        this.tagType = tagType;
-        this.severity = severity;
-        this.displayString = displayString;
-        this.iconName = iconName;
-    }
+  public Tag() {}
 
-    public long getId() {
-        return id;
-    }
+  public Tag(
+      int tagIdentifier, String tagType, String severity, String displayString, String iconName) {
+    this.tagIdentifier = tagIdentifier;
+    this.tagType = tagType;
+    this.severity = severity;
+    this.displayString = displayString;
+    this.iconName = iconName;
+  }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public int getTagIdentifier() {
-        return tagIdentifier;
-    }
+  public void setId(long id) {
+    this.id = id;
+  }
 
-    public void setTagIdentifier(int tagIdentifier) {
-        this.tagIdentifier = tagIdentifier;
-    }
+  public int getTagIdentifier() {
+    return tagIdentifier;
+  }
 
-    public String getTagType() {
-        return tagType;
-    }
+  public void setTagIdentifier(int tagIdentifier) {
+    this.tagIdentifier = tagIdentifier;
+  }
 
-    public void setTagType(String tagType) {
-        this.tagType = tagType;
-    }
+  public String getTagType() {
+    return tagType;
+  }
 
-    public String getSeverity() {
-        return severity;
-    }
+  public void setTagType(String tagType) {
+    this.tagType = tagType;
+  }
 
-    public void setSeverity(String severity) {
-        this.severity = severity;
-    }
+  public String getSeverity() {
+    return severity;
+  }
 
-    public String getDisplayString() {
-        return displayString;
-    }
+  public void setSeverity(String severity) {
+    this.severity = severity;
+  }
 
-    public void setDisplayString(String displayString) {
-        this.displayString = displayString;
-    }
+  public String getDisplayString() {
+    return displayString;
+  }
 
-    public String getIconName() {
-        return iconName;
-    }
+  public void setDisplayString(String displayString) {
+    this.displayString = displayString;
+  }
 
-    public void setIconName(String iconName) {
-        this.iconName = iconName;
-    }
+  public String getIconName() {
+    return iconName;
+  }
+
+  public void setIconName(String iconName) {
+    this.iconName = iconName;
+  }
 }

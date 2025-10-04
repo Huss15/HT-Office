@@ -15,20 +15,18 @@ import lombok.experimental.SuperBuilder;
 @Setter
 public class Customer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-    @Column(unique=true)
-    private String customId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private Long id;
 
-    private String street;
-    private String zipCode;
-    private String city;
-    private String email;
-    private String phoneNumber;
+  @Column(unique = true)
+  private String customId;
 
-    public Customer(){
+  private String street;
+  private String zipCode;
+  private String city;
+  private String email;
+  private String phoneNumber;
 
-    }
-
+  public Customer() {}
 }

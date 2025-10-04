@@ -39,12 +39,9 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
 
-
     // Test-Abhängigkeiten
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
-
-
 
 tasks.withType<Test> {
     useJUnitPlatform()
@@ -52,9 +49,8 @@ tasks.withType<Test> {
 
 tasks.named("check") {
     dependsOn("spotlessCheck")
-}// `build.gradle.kts`
+} // `build.gradle.kts`
 spotless {
-    ratchetFrom("origin/main")
     encoding("UTF-8")
 
     java {
