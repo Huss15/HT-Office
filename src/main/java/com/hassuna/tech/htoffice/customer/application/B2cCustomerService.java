@@ -21,7 +21,11 @@ public class B2cCustomerService {
     CustomCustomerIdGenerator.assertValidCustomerId(customerId);
     return b2cCustomerRepository
         .findByCustomId(customerId)
-        .orElseThrow(() -> new RuntimeException("B2C Customer not found with ID: " + customerId));
+        .orElseThrow(
+            () -> {
+              log.warn("Customer with ID {} not found", customerId);
+              return new IllegalArgumentException("Customer not found with ID: " + customerId);
+            });
   }
 
   public B2cCustomer createCustomer(CreateB2cCustomerPayload requestBody) {
@@ -35,7 +39,7 @@ public class B2cCustomerService {
             .zipCode(requestBody.address().zipCode())
             .email(requestBody.contactData().email())
             .phoneNumber(requestBody.contactData().phoneNumber())
-            .customId(CustomCustomerIdGenerator.generateCustomerId())
+            .customId(CustomCustomerIdGenerator.generateB2cCustomerId())
             .build();
 
     return b2cCustomerRepository.save(customer);
