@@ -11,7 +11,7 @@ public record B2cCustomerPayload(
 
   public static B2cCustomerPayload convertToB2cCustomerPayload(B2cCustomer customer) {
     return new B2cCustomerPayload(
-        customer.getCustomId(),
+        customer.getCustomerId(),
         customer.getFirstname(),
         customer.getLastname(),
         new AddressPayload(customer.getStreet(), customer.getCity(), customer.getZipCode()),

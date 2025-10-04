@@ -20,7 +20,7 @@ public class Customer {
   private Long id;
 
   @Column(unique = true)
-  private String customId;
+  private String customerId;
 
   private String street;
   private String zipCode;

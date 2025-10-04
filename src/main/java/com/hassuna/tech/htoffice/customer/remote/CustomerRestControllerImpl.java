@@ -2,12 +2,7 @@ package com.hassuna.tech.htoffice.customer.remote;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.hassuna.tech.htoffice.customer.application.B2bCustomerService;
 import com.hassuna.tech.htoffice.customer.application.B2cCustomerService;
@@ -19,6 +14,7 @@ import com.hassuna.tech.htoffice.customer.remote.payload.B2cCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2bCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2cCustomerPayload;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -38,19 +34,17 @@ public class CustomerRestControllerImpl implements CustomerRestController {
 
   @Override
   @GetMapping("v1/customer/{customerId}")
-  public ResponseEntity<?> getCustomerByCustomerId(@PathVariable String customerId) {
+  public ResponseEntity<?> getCustomerByCustomerId(
+      @Parameter(description = "Customer custom ID, e.g. HT-B-000001 or HT-C-000001") @PathVariable
+          String customerId) {
 
     if (CustomCustomerIdGenerator.isValidB2bCustomerId(customerId)) {
-      log.debug("Received request to fetch B2B customer with ID: {}", customerId);
       B2bCustomer customer = b2bCustomerService.getCustomer(customerId);
       B2bCustomerPayload responsePayload = B2bCustomerPayload.convertToB2bCustomerPayload(customer);
-      log.debug("Fetched B2B customer: {}", responsePayload.customId());
       return ResponseEntity.ok(responsePayload);
     } else {
-      log.debug("Received request to fetch B2C customer with ID: {}", customerId);
       B2cCustomer customer = b2cCustomerService.getCustomer(customerId);
       B2cCustomerPayload responsePayload = B2cCustomerPayload.convertToB2cCustomerPayload(customer);
-      log.debug("Fetched B2C customer: {}", responsePayload.customerId());
       return ResponseEntity.ok(responsePayload);
     }
   }
@@ -59,24 +53,15 @@ public class CustomerRestControllerImpl implements CustomerRestController {
   @PostMapping("v1/customer/b2b")
   public ResponseEntity<B2bCustomerPayload> createB2bCustomer(
       @RequestBody CreateB2bCustomerPayload requestBody) {
-    log.debug("Resieved request to create B2B customer: {}", requestBody.companyName());
     B2bCustomer customer = b2bCustomerService.createCustomer(requestBody);
-    B2bCustomerPayload responsePayload = B2bCustomerPayload.convertToB2bCustomerPayload(customer);
-    log.debug("Created B2B customer: {}", responsePayload.customId());
-    return ResponseEntity.ok(responsePayload);
+    return ResponseEntity.ok(B2bCustomerPayload.convertToB2bCustomerPayload(customer));
   }
 
   @Override
   @PostMapping("v1/customer/b2c")
   public ResponseEntity<B2cCustomerPayload> createB2cCustomer(
-      CreateB2cCustomerPayload requestBody) {
-    log.debug(
-        "Received request to create B2C customer: {} {}",
-        requestBody.firstname(),
-        requestBody.lastname());
+      @RequestBody CreateB2cCustomerPayload requestBody) {
     B2cCustomer customer = b2cCustomerService.createCustomer(requestBody);
-    B2cCustomerPayload responsePayload = B2cCustomerPayload.convertToB2cCustomerPayload(customer);
-    log.debug("Created B2C customer: {}", responsePayload.customerId());
-    return ResponseEntity.ok(responsePayload);
+    return ResponseEntity.ok(B2cCustomerPayload.convertToB2cCustomerPayload(customer));
   }
 }
