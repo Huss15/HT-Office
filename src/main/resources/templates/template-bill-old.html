@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Rechnung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+    <style type="text/css">
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .invoice-table th, .invoice-table td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem;
+        }
+
+        .invoice-table th {
+            background-color: #f8fafc;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .total-row {
+            font-weight: 600;
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="bg-white p-8">
+<div class="max-w-4xl mx-auto">
+    <!-- Header mit Logo -->
+    <header class="flex justify-between mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Rechnung</h1>
+        </div>
+        <div class="w-32">
+            <img src="https://placehold.co/200x100?text=Firmenlogo"
+                 alt="Moderner blauer Schriftzug des Firmennamens auf weißem Grund"/>
+        </div>
+    </header>
+
+    <!-- Rechnungsdaten -->
+    <div class="flex flex-wrap mb-10">
+        <div class="w-full md:w-1/2 mb-6 md:mb-0">
+            <div class="p-4 rounded-lg">
+                <!--                <h2 class="font-bold text-lg mb-2">Rechnung an:</h2>-->
+                <!-- In template-bill.html -->
+                <p class="text-gray-700">
+                    <span th:text="${customerName}">Customer name is missing</span><br/>
+                    <span th:text="${customerStreet}">Customer street is missing</span><br/>
+                    <span th:text="${customerCity}">Customer city is missing</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="w-full md:w-1/2">
+            <div class="p-4 rounded-lg">
+                <div class="grid grid-cols-2 gap-2 mb-2 text-right">
+                    <div class="font-medium">Rechnungsnummer:</div>
+                    <div>2023-001</div>
+                    <div class="font-medium">Kundennummer:</div>
+                    <div>K-12345</div>
+                    <div class="font-medium">Rechnungsdatum:</div>
+                    <div>31.12.2023</div>
+                    <div class="font-medium">Leistungsdatum:</div>
+                    <div>01.01.2023 - 31.12.2023</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Einleitungstext -->
+    <div class="mb-8">
+        <p class="text-gray-700">
+            Sehr geehrter Herr Mustermann,<br/>
+            wir stellen Ihnen hiermit folgende Leistungen in Rechnung:
+        </p>
+    </div>
+
+    <!-- Leistungstabelle -->
+    <table class="invoice-table mb-8">
+        <thead>
+        <tr>
+            <th class="w-12">Pos.</th>
+            <th>Bezeichnung</th>
+            <th class="w-24">Menge</th>
+            <th class="w-24">Einheit</th>
+            <th class="w-24">Einzelpreis €</th>
+            <th class="w-24">Gesamt €</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>Beratungsleistungen Stunde</td>
+            <td>10</td>
+            <td>h</td>
+            <td>120,00</td>
+            <td>1.200,00</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Webentwicklung</td>
+            <td>1</td>
+            <td>Pauschale</td>
+            <td>2.500,00</td>
+            <td>2.500,00</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Hosting Jahresgebühr</td>
+            <td>1</td>
+            <td>Jahr</td>
+            <td>240,00</td>
+            <td>240,00</td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr class="total-row">
+            <td colspan="5" class="text-right">Zwischensumme (netto):</td>
+            <td>3.940,00</td>
+        </tr>
+        <tr class="total-row">
+            <td colspan="5" class="text-right">Umsatzsteuer (19%):</td>
+            <td>748,60</td>
+        </tr>
+        <tr class="total-row">
+            <td colspan="5" class="text-right font-bold">Gesamtbetrag:</td>
+            <td class="font-bold">4.688,60</td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <!-- Zahlungsbedingungen -->
+    <div class="text-sm text-gray-600 border-t-2 pt-4">
+        <p class="mb-2">
+            <span class="font-bold">Zahlungsbedingungen:</span> Bitte überweisen Sie den Gesamtbetrag innerhalb von 14
+            Tagen auf unser unten angegebenes Konto.
+        </p>
+        <p>
+            <span class="font-bold">Bankverbindung:</span> Musterbank, IBAN: DE00 0000 0000 0000 0000 00, BIC:
+            MUSTDE33XXX
+        </p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 pt-4 border-t border-gray-200 text-sm text-gray-500">
+        <div class="flex flex-wrap justify-between">
+            <div>
+                <p class="font-bold text-gray-700">Musterfirma GmbH</p>
+                <p>Geschäftsführung: Max Muster</p>
+                <p>Musterstraße 456, 54321 Musterstadt</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <p>Telefon: 01234 56789-0</p>
+                <p>E-Mail: info@musterfirma.de</p>
+                <p>USt-IdNr.: DE123456789</p>
+            </div>
+        </div>
+    </footer>
+</div>
+</body>
+</html>
+
