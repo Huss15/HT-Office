@@ -49,7 +49,8 @@ tasks.withType<Test> {
 
 tasks.named("check") {
     dependsOn("spotlessCheck")
-} // `build.gradle.kts`
+}
+
 spotless {
     encoding("UTF-8")
 
