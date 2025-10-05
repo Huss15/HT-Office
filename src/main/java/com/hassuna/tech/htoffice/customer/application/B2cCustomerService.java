@@ -1,9 +1,12 @@
 package com.hassuna.tech.htoffice.customer.application;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hassuna.tech.htoffice.customer.application.entity.B2cCustomer;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2cCustomerPayload;
+import com.hassuna.tech.htoffice.customer.remote.payload.CustomerDtoPayload;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +23,7 @@ public class B2cCustomerService {
   public B2cCustomer getCustomer(final String customerId) {
     CustomCustomerIdGenerator.assertValidCustomerId(customerId);
     return b2cCustomerRepository
-        .findByCustomId(customerId)
+        .findByCustomerId(customerId)
         .orElseThrow(
             () -> {
               log.warn("Customer with ID {} not found", customerId);
@@ -34,12 +37,13 @@ public class B2cCustomerService {
         B2cCustomer.builder()
             .firstname(requestBody.firstname())
             .lastname(requestBody.lastname())
+            .isMale(requestBody.isMale())
             .city(requestBody.address().city())
             .street(requestBody.address().street())
             .zipCode(requestBody.address().zipCode())
             .email(requestBody.contactData().email())
             .phoneNumber(requestBody.contactData().phoneNumber())
-            .customId(CustomCustomerIdGenerator.generateB2cCustomerId())
+            .customerId(CustomCustomerIdGenerator.generateB2cCustomerId())
             .build();
 
     return b2cCustomerRepository.save(customer);

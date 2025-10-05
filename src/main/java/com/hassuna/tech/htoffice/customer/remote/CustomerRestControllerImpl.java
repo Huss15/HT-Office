@@ -1,18 +1,25 @@
 package com.hassuna.tech.htoffice.customer.remote;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.hassuna.tech.htoffice.base.remote.paylaod.PagePayload;
+import com.hassuna.tech.htoffice.base.remote.paylaod.SimplePayload;
 import com.hassuna.tech.htoffice.customer.application.B2bCustomerService;
 import com.hassuna.tech.htoffice.customer.application.B2cCustomerService;
 import com.hassuna.tech.htoffice.customer.application.CustomCustomerIdGenerator;
+import com.hassuna.tech.htoffice.customer.application.CustomerService;
 import com.hassuna.tech.htoffice.customer.application.entity.B2bCustomer;
 import com.hassuna.tech.htoffice.customer.application.entity.B2cCustomer;
 import com.hassuna.tech.htoffice.customer.remote.payload.B2bCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.B2cCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2bCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2cCustomerPayload;
+import com.hassuna.tech.htoffice.customer.remote.payload.CustomerDtoPayload;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,14 +29,35 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api")
 public class CustomerRestControllerImpl implements CustomerRestController {
 
+  private final CustomerService customerService;
   private final B2bCustomerService b2bCustomerService;
   private final B2cCustomerService b2cCustomerService;
 
-  @Autowired
   public CustomerRestControllerImpl(
-      B2bCustomerService b2bCustomerService, B2cCustomerService b2cCustomerService) {
+      CustomerService customerService,
+      B2bCustomerService b2bCustomerService,
+      B2cCustomerService b2cCustomerService) {
+    this.customerService = customerService;
     this.b2bCustomerService = b2bCustomerService;
     this.b2cCustomerService = b2cCustomerService;
+  }
+
+  @Override
+  @GetMapping("v1/customers")
+  public PagePayload<CustomerDtoPayload> getAllCustomers(
+      @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC)
+          Pageable pageable) {
+    Page<CustomerDtoPayload> b2bCustomers = customerService.getAllCustomers(pageable);
+
+    return new PagePayload<>(b2bCustomers.getContent(), b2bCustomers.isLast());
+  }
+
+  @Override
+  @GetMapping("v1/customers/total")
+  public ResponseEntity<SimplePayload> getTotalCustomerCount() {
+    int countResult = customerService.getTotalCustomerCount();
+    SimplePayload responsePayload = new SimplePayload(countResult);
+    return ResponseEntity.ok(responsePayload);
   }
 
   @Override

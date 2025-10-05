@@ -1,11 +1,15 @@
 package com.hassuna.tech.htoffice.customer.remote;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import com.hassuna.tech.htoffice.base.remote.paylaod.PagePayload;
+import com.hassuna.tech.htoffice.base.remote.paylaod.SimplePayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.B2bCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.B2cCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2bCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2cCustomerPayload;
+import com.hassuna.tech.htoffice.customer.remote.payload.CustomerDtoPayload;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,6 +20,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Customer", description = "Operations for B2B and B2C customers")
 public interface CustomerRestController {
+
+  PagePayload<CustomerDtoPayload> getAllCustomers(Pageable pageable);
+
+  ResponseEntity<SimplePayload> getTotalCustomerCount();
 
   @Operation(
       summary = "Get customer by ID",

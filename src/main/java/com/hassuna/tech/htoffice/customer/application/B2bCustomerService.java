@@ -5,10 +5,13 @@ import java.util.regex.Pattern;
 
 import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hassuna.tech.htoffice.customer.application.entity.B2bCustomer;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2bCustomerPayload;
+import com.hassuna.tech.htoffice.customer.remote.payload.CustomerDtoPayload;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +34,7 @@ public class B2bCustomerService {
   public B2bCustomer getCustomer(final String customerId) {
     CustomCustomerIdGenerator.assertValidCustomerId(customerId);
     return b2bCustomerRepository
-        .findByCustomId(customerId)
+        .findByCustomerId(customerId)
         .orElseThrow(
             () -> {
               log.warn("Customer with ID {} not found", customerId);
@@ -54,7 +57,7 @@ public class B2bCustomerService {
             .zipCode(requestBody.address().zipCode())
             .email(requestBody.contactData().email())
             .phoneNumber(requestBody.contactData().phoneNumber())
-            .customId(CustomCustomerIdGenerator.generateB2bCustomerId())
+            .customerId(CustomCustomerIdGenerator.generateB2bCustomerId())
             .build();
 
     try {
