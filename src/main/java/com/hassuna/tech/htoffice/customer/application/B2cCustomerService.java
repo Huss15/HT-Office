@@ -1,12 +1,9 @@
 package com.hassuna.tech.htoffice.customer.application;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hassuna.tech.htoffice.customer.application.entity.B2cCustomer;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2cCustomerPayload;
-import com.hassuna.tech.htoffice.customer.remote.payload.CustomerDtoPayload;
 
 import lombok.extern.slf4j.Slf4j;
 

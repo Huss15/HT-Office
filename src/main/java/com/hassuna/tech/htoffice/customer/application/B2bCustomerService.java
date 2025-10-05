@@ -5,13 +5,10 @@ import java.util.regex.Pattern;
 
 import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hassuna.tech.htoffice.customer.application.entity.B2bCustomer;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2bCustomerPayload;
-import com.hassuna.tech.htoffice.customer.remote.payload.CustomerDtoPayload;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -3,6 +3,7 @@ package com.hassuna.tech.htoffice.customer.remote;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import com.hassuna.tech.htoffice.base.remote.paylaod.ErrorPayload;
 import com.hassuna.tech.htoffice.base.remote.paylaod.PagePayload;
 import com.hassuna.tech.htoffice.base.remote.paylaod.SimplePayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.B2bCustomerPayload;
@@ -21,8 +22,38 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Customer", description = "Operations for B2B and B2C customers")
 public interface CustomerRestController {
 
+  @Operation(
+      summary = "Get all customers (paginated)",
+      description = "Returns a paginated list of all customers (B2B and B2C).",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Paginated list of customers",
+            content = @Content(schema = @Schema(implementation = PagePayload.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid pagination parameters",
+            content = @Content(schema = @Schema(implementation = ErrorPayload.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error retrieving customers",
+            content = @Content(schema = @Schema(implementation = ErrorPayload.class)))
+      })
   PagePayload<CustomerDtoPayload> getAllCustomers(Pageable pageable);
 
+  @Operation(
+      summary = "Get total customer count (B2B & B2C)",
+      description = "Returns the total number of customers.",
+      responses = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Total customer count",
+            content = @Content(schema = @Schema(implementation = SimplePayload.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error retrieving count",
+            content = @Content(schema = @Schema(implementation = ErrorPayload.class)))
+      })
   ResponseEntity<SimplePayload> getTotalCustomerCount();
 
   @Operation(
@@ -39,8 +70,18 @@ public interface CustomerRestController {
                     mediaType = "application/json",
                     schema =
                         @Schema(oneOf = {B2bCustomerPayload.class, B2cCustomerPayload.class}))),
-        @ApiResponse(responseCode = "404", description = "Customer not found", content = @Content),
-        @ApiResponse(responseCode = "400", description = "Invalid ID format", content = @Content)
+        @ApiResponse(
+            responseCode = "404",
+            description = "Customer not found",
+            content = @Content(schema = @Schema(implementation = ErrorPayload.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid ID format",
+            content = @Content(schema = @Schema(implementation = ErrorPayload.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error retrieving customer",
+            content = @Content(schema = @Schema(implementation = ErrorPayload.class)))
       })
   ResponseEntity<?> getCustomerByCustomerId(String customerId);
 
@@ -55,13 +96,16 @@ public interface CustomerRestController {
       responses = {
         @ApiResponse(
             responseCode = "200",
-            description = "B2B customer created",
+            description = "Customer created",
             content = @Content(schema = @Schema(implementation = B2bCustomerPayload.class))),
         @ApiResponse(
-            responseCode = "409",
-            description = "Conflict (duplicate)",
-            content = @Content),
-        @ApiResponse(responseCode = "400", description = "Validation error", content = @Content)
+            responseCode = "400",
+            description = "Validation error",
+            content = @Content(schema = @Schema(implementation = ErrorPayload.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error creating customer",
+            content = @Content(schema = @Schema(implementation = ErrorPayload.class)))
       })
   ResponseEntity<B2bCustomerPayload> createB2bCustomer(CreateB2bCustomerPayload requestBody);
 
@@ -76,13 +120,16 @@ public interface CustomerRestController {
       responses = {
         @ApiResponse(
             responseCode = "200",
-            description = "B2C customer created",
+            description = "Customer created",
             content = @Content(schema = @Schema(implementation = B2cCustomerPayload.class))),
         @ApiResponse(
-            responseCode = "409",
-            description = "Conflict (duplicate)",
-            content = @Content),
-        @ApiResponse(responseCode = "400", description = "Validation error", content = @Content)
+            responseCode = "400",
+            description = "Validation error",
+            content = @Content(schema = @Schema(implementation = ErrorPayload.class))),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Error creating customer",
+            content = @Content(schema = @Schema(implementation = ErrorPayload.class)))
       })
   ResponseEntity<B2cCustomerPayload> createB2cCustomer(CreateB2cCustomerPayload requestBody);
 }
