@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.hassuna.tech.htoffice.customer.application.entity.B2bCustomer;
+import com.hassuna.tech.htoffice.customer.application.entity.ContactPerson;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2bCustomerPayload;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +24,13 @@ public class B2bCustomerService {
       Pattern.compile("Key \\(([^)]+)\\)=\\(([^)]+)\\) already exists\\.");
 
   private final B2bCustomerRepository b2bCustomerRepository;
+  private final ContactPersonRepository contactPersonRepository;
 
-  public B2bCustomerService(B2bCustomerRepository b2bCustomerRepository) {
+  public B2bCustomerService(
+      B2bCustomerRepository b2bCustomerRepository,
+      ContactPersonRepository contactPersonRepository) {
     this.b2bCustomerRepository = b2bCustomerRepository;
+    this.contactPersonRepository = contactPersonRepository;
   }
 
   public B2bCustomer getCustomer(final String customerId) {
@@ -44,17 +49,30 @@ public class B2bCustomerService {
 
     validateCustomerData(requestBody);
 
+    ContactPerson contactPerson = null;
+
+    if (requestBody.contactPerson() != null) {
+      contactPerson =
+          ContactPerson.builder()
+              .salutation(requestBody.contactPerson().salutation())
+              .firstName(requestBody.contactPerson().firstName())
+              .lastName(requestBody.contactPerson().lastName())
+              .build();
+      contactPerson = contactPersonRepository.save(contactPerson);
+    }
+
     B2bCustomer customer =
         B2bCustomer.builder()
             .companyName(requestBody.companyName())
             .taxId(requestBody.taxId())
-            .VatIdentificationNumber(requestBody.VatIdentificationNumber())
+            .vatIdentificationNumber(requestBody.vatIdentificationNumber())
             .city(requestBody.address().city())
             .street(requestBody.address().street())
             .zipCode(requestBody.address().zipCode())
             .email(requestBody.contactData().email())
             .phoneNumber(requestBody.contactData().phoneNumber())
             .customerId(CustomCustomerIdGenerator.generateB2bCustomerId())
+            .contactPerson(contactPerson)
             .build();
 
     try {
@@ -125,12 +143,12 @@ public class B2bCustomerService {
     if (isBlank(payload.companyName())) {
       fail("companyName must be provided");
     }
-    if (isBlank(payload.taxId()) && isBlank(payload.VatIdentificationNumber())) {
-      fail("Either taxId or VatIdentificationNumber must be provided");
+    if (isBlank(payload.taxId()) && isBlank(payload.vatIdentificationNumber())) {
+      fail("Either taxId or vatIdentificationNumber must be provided");
     }
-    if (!isBlank(payload.VatIdentificationNumber())
-        && !VAT_PATTERN.matcher(payload.VatIdentificationNumber()).matches()) {
-      fail("VatIdentificationNumber must match ^DE[0-9]{9}$");
+    if (!isBlank(payload.vatIdentificationNumber())
+        && !VAT_PATTERN.matcher(payload.vatIdentificationNumber()).matches()) {
+      fail("vatIdentificationNumber must match ^DE[0-9]{9}$");
     }
     if (!isBlank(payload.taxId())) {
       String cleaned = payload.taxId().replaceAll("\\D", "");
@@ -155,13 +173,16 @@ public class B2bCustomerService {
         fail("contactData.phoneNumber must be provided if contactData is present");
       }
     }
-    if (payload.contactPerson() != null) {
-      if (isBlank(payload.contactPerson().firstName())) {
-        fail("contactPerson.firstName must be provided if contactPerson is present.");
-      }
-      if (isBlank(payload.contactPerson().lastName())) {
-        fail("contactPerson.lastName must be provided if contactPerson is present.");
-      }
+    boolean hasFirstName = !isBlank(payload.contactPerson().firstName());
+    boolean hasLastName = !isBlank(payload.contactPerson().lastName());
+    boolean hasSalutation = !isBlank(payload.contactPerson().salutation());
+
+    int filledFields = (hasFirstName ? 1 : 0) + (hasLastName ? 1 : 0) + (hasSalutation ? 1 : 0);
+
+    if (filledFields > 0 && filledFields < 3) {
+      fail(
+          "All contactPerson fields (salutation, firstName, lastName) must be provided if any is"
+              + " present.");
     }
   }
 

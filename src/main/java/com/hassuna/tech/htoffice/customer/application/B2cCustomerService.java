@@ -34,7 +34,7 @@ public class B2cCustomerService {
         B2cCustomer.builder()
             .firstname(requestBody.firstname())
             .lastname(requestBody.lastname())
-            .isMale(requestBody.isMale())
+            .salutation(requestBody.salutation())
             .city(requestBody.address().city())
             .street(requestBody.address().street())
             .zipCode(requestBody.address().zipCode())

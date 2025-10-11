@@ -12,9 +12,10 @@ public record B2bCustomerPayload(
     @Schema(description = "Registered company name", example = "Acme GmbH") String companyName,
     @Schema(description = "Masked national tax ID", example = "*****123") String taxId,
     @Schema(description = "Masked VAT identification number", example = "*******789")
-        String VatIdentificationNumber,
+        String vatIdentificationNumber,
     @Schema(description = "Registered address") AddressPayload address,
-    @Schema(description = "Primary contact data") ContactDataPayload contactData) {
+    @Schema(description = "Primary contact data") ContactDataPayload contactData,
+    @Schema(description = "Primary contact person") ContactPersonPayload contactPerson) {
 
   public static B2bCustomerPayload convertToB2bCustomerPayload(B2bCustomer customer) {
     return new B2bCustomerPayload(
@@ -23,6 +24,10 @@ public record B2bCustomerPayload(
         MaskingUtils.maskExceptLast3(customer.getTaxId()),
         MaskingUtils.maskExceptLast3(customer.getVatIdentificationNumber()),
         new AddressPayload(customer.getStreet(), customer.getCity(), customer.getZipCode()),
-        new ContactDataPayload(customer.getEmail(), customer.getPhoneNumber()));
+        new ContactDataPayload(customer.getEmail(), customer.getPhoneNumber()),
+        new ContactPersonPayload(
+            customer.getContactPerson().getSalutation(),
+            customer.getContactPerson().getFirstName(),
+            customer.getContactPerson().getLastName()));
   }
 }

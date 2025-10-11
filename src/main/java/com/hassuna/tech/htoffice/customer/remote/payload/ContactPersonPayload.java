@@ -1,3 +1,3 @@
 package com.hassuna.tech.htoffice.customer.remote.payload;
 
-public record ContactPersonPayload(String firstName, String lastName, boolean isMale) {}
+public record ContactPersonPayload(String salutation, String firstName, String lastName) {}

@@ -15,7 +15,7 @@ public class B2cCustomer extends Customer {
 
   private String firstname;
   private String lastname;
-  private boolean isMale;
+  private String salutation;
 
   public B2cCustomer() {
     super();
