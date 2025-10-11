@@ -32,8 +32,8 @@ public class B2cCustomerService {
     validateCustomerData(requestBody);
     B2cCustomer customer =
         B2cCustomer.builder()
-            .firstname(requestBody.firstname())
-            .lastname(requestBody.lastname())
+            .firstname(requestBody.firstName())
+            .lastname(requestBody.lastName())
             .salutation(requestBody.salutation())
             .city(requestBody.address().city())
             .street(requestBody.address().street())
@@ -47,10 +47,10 @@ public class B2cCustomerService {
   }
 
   private void validateCustomerData(CreateB2cCustomerPayload requestBody) {
-    if (isBlank(requestBody.firstname())) {
+    if (isBlank(requestBody.firstName())) {
       fail("First name is required.");
     }
-    if (isBlank(requestBody.lastname())) {
+    if (isBlank(requestBody.lastName())) {
       fail("Last name is required.");
     }
     if (isBlank(requestBody.contactData().email())) {

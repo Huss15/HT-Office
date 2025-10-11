@@ -4,14 +4,16 @@ import com.hassuna.tech.htoffice.customer.application.entity.B2cCustomer;
 
 public record B2cCustomerPayload(
     String customerId,
-    String firstname,
-    String lastname,
+    String salutation,
+    String firstName,
+    String lastName,
     AddressPayload address,
     ContactDataPayload contactData) {
 
   public static B2cCustomerPayload convertToB2cCustomerPayload(B2cCustomer customer) {
     return new B2cCustomerPayload(
         customer.getCustomerId(),
+        customer.getSalutation(),
         customer.getFirstname(),
         customer.getLastname(),
         new AddressPayload(customer.getStreet(), customer.getCity(), customer.getZipCode()),
