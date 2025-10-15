@@ -5,7 +5,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.hassuna.tech.htoffice.base.remote.paylaod.PagePayload;
 import com.hassuna.tech.htoffice.base.remote.paylaod.SimplePayload;
@@ -20,6 +26,7 @@ import com.hassuna.tech.htoffice.customer.remote.payload.B2cCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2bCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2cCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CustomerDtoPayload;
+import com.hassuna.tech.htoffice.customer.remote.payload.GetCustomerPayload;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
@@ -62,18 +69,18 @@ public class CustomerRestControllerImpl implements CustomerRestController {
 
   @Override
   @GetMapping("v1/customer/{customerId}")
-  public ResponseEntity<?> getCustomerByCustomerId(
+  public ResponseEntity<GetCustomerPayload> getCustomerByCustomerId(
       @Parameter(description = "Customer custom ID, e.g. HT-B-000001 or HT-C-000001") @PathVariable
           String customerId) {
 
     if (CustomCustomerIdGenerator.isValidB2bCustomerId(customerId)) {
       B2bCustomer customer = b2bCustomerService.getCustomer(customerId);
       B2bCustomerPayload responsePayload = B2bCustomerPayload.convertToB2bCustomerPayload(customer);
-      return ResponseEntity.ok(responsePayload);
+      return ResponseEntity.ok(new GetCustomerPayload(true, responsePayload));
     } else {
       B2cCustomer customer = b2cCustomerService.getCustomer(customerId);
       B2cCustomerPayload responsePayload = B2cCustomerPayload.convertToB2cCustomerPayload(customer);
-      return ResponseEntity.ok(responsePayload);
+      return ResponseEntity.ok(new GetCustomerPayload(false, responsePayload));
     }
   }
 
@@ -91,5 +98,13 @@ public class CustomerRestControllerImpl implements CustomerRestController {
       @RequestBody CreateB2cCustomerPayload requestBody) {
     B2cCustomer customer = b2cCustomerService.createCustomer(requestBody);
     return ResponseEntity.ok(B2cCustomerPayload.convertToB2cCustomerPayload(customer));
+  }
+
+  @Override
+  @PutMapping("/v1/customer/{customerId}")
+  public ResponseEntity<B2bCustomerPayload> editB2bCustomer(
+      @PathVariable String customerId, @RequestBody B2bCustomerPayload requestBody) {
+    B2bCustomer customer = b2bCustomerService.editB2bCustomer(customerId, requestBody);
+    return ResponseEntity.ok(B2bCustomerPayload.convertToB2bCustomerPayload(customer));
   }
 }

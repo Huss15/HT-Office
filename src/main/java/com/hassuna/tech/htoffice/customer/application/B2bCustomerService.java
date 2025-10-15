@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 
 import com.hassuna.tech.htoffice.customer.application.entity.B2bCustomer;
 import com.hassuna.tech.htoffice.customer.application.entity.ContactPerson;
+import com.hassuna.tech.htoffice.customer.remote.payload.B2bCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2bCustomerPayload;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@Transactional
 public class B2bCustomerService {
 
   private static final Pattern VAT_PATTERN = Pattern.compile("^DE\\d{9}$");
@@ -86,6 +89,58 @@ public class B2bCustomerService {
       }
       throw ex;
     }
+  }
+
+  /**
+   * Edit the user via REST call. Only the field witch are changed will update.
+   *
+   * @param requestBody REST body witch contains the data
+   * @return B2bCustomer even if we didnt change anything
+   */
+  public B2bCustomer editB2bCustomer(String customerId, B2bCustomerPayload requestBody) {
+
+    B2bCustomer actualCustomer = getCustomer(customerId);
+
+    final int actualCustomerHash = actualCustomer.hashCode();
+
+    if (!actualCustomer
+        .getVatIdentificationNumber()
+        .equals(requestBody.vatIdentificationNumber())) {
+      actualCustomer.setVatIdentificationNumber(requestBody.vatIdentificationNumber());
+    }
+    if (!actualCustomer.getTaxId().equals(requestBody.taxId())) {
+      actualCustomer.setTaxId(requestBody.taxId());
+    }
+    if (!actualCustomer.getCompanyName().equals(requestBody.companyName())) {
+      actualCustomer.setCompanyName(requestBody.companyName());
+    }
+    if (!actualCustomer.getStreet().equals(requestBody.address().street())) {
+      actualCustomer.setStreet(requestBody.address().street());
+    }
+    if (!actualCustomer.getZipCode().equals(requestBody.address().zipCode())) {
+      actualCustomer.setZipCode(requestBody.address().zipCode());
+    }
+    if (!actualCustomer.getEmail().equals(requestBody.contactData().email())) {
+      actualCustomer.setEmail(requestBody.contactData().email());
+    }
+    if (!actualCustomer.getPhoneNumber().equals(requestBody.contactData().phoneNumber())) {
+      actualCustomer.setPhoneNumber(requestBody.contactData().phoneNumber());
+    }
+    if (actualCustomer.getContactPerson() == null) {
+      ContactPerson contactPerson =
+          ContactPerson.builder() //
+              .salutation(requestBody.contactPerson().salutation()) //
+              .firstName(requestBody.contactPerson().firstName()) //
+              .lastName(requestBody.contactPerson().lastName()) //
+              .build();
+      contactPerson = contactPersonRepository.save(contactPerson);
+      actualCustomer.setContactPerson(contactPerson);
+    }
+
+    if (actualCustomer.hashCode() != actualCustomerHash) {
+      actualCustomer = b2bCustomerRepository.save(actualCustomer);
+    }
+    return actualCustomer;
   }
 
   private String buildUniqueViolationMessage(PSQLException psql) {

@@ -11,6 +11,7 @@ import com.hassuna.tech.htoffice.customer.remote.payload.B2cCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2bCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CreateB2cCustomerPayload;
 import com.hassuna.tech.htoffice.customer.remote.payload.CustomerDtoPayload;
+import com.hassuna.tech.htoffice.customer.remote.payload.GetCustomerPayload;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -83,7 +84,7 @@ public interface CustomerRestController {
             description = "Error retrieving customer",
             content = @Content(schema = @Schema(implementation = ErrorPayload.class)))
       })
-  ResponseEntity<?> getCustomerByCustomerId(String customerId);
+  ResponseEntity<GetCustomerPayload> getCustomerByCustomerId(String customerId);
 
   @Operation(
       summary = "Create B2B customer",
@@ -132,4 +133,14 @@ public interface CustomerRestController {
             content = @Content(schema = @Schema(implementation = ErrorPayload.class)))
       })
   ResponseEntity<B2cCustomerPayload> createB2cCustomer(CreateB2cCustomerPayload requestBody);
+
+  @Operation(
+      summary = "Edit a existing user",
+      requestBody =
+          @RequestBody(
+              required = true,
+              description = "Data to edit the customer",
+              content = @Content(schema = @Schema(implementation = B2bCustomerPayload.class))))
+  ResponseEntity<B2bCustomerPayload> editB2bCustomer(
+      String customerId, B2bCustomerPayload requestBody);
 }
